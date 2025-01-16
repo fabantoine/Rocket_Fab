@@ -31,7 +31,7 @@ class Car:
         self.front_wheel_body = pymunk.Body(wheel_mass, wheel_moment)
         self.front_wheel_body.position = (position[0] + size[0] / 3, position[1] + size[1] / 2 + wheel_radius)
         self.front_wheel_shape = pymunk.Circle(self.front_wheel_body, wheel_radius)
-        self.front_wheel_shape.friction = 0.7
+        self.front_wheel_shape.friction = 0.9
         self.front_wheel_shape.elasticity = 0.1
         self.front_wheel_shape.collision_type = 2
 
@@ -39,7 +39,7 @@ class Car:
         self.rear_wheel_body = pymunk.Body(wheel_mass, wheel_moment)
         self.rear_wheel_body.position = (position[0] - size[0] / 3, position[1] + size[1] / 2 + wheel_radius)
         self.rear_wheel_shape = pymunk.Circle(self.rear_wheel_body, wheel_radius)
-        self.rear_wheel_shape.friction = 0.7
+        self.rear_wheel_shape.friction = 0.9
         self.rear_wheel_shape.elasticity = 0.1
         self.rear_wheel_shape.collision_type = 2
 
@@ -66,7 +66,7 @@ class Car:
         )
         # Moteur avant
         self.front_motor = pymunk.constraints.SimpleMotor(self.body, self.front_wheel_body, 0)
-        self.front_motor.max_force = 10000.0
+        self.front_motor.max_force = 8000.0
 
         # Suspension arrière
         anchor_a = (-size[0] / 3, size[1] / 2 - 20)
@@ -75,14 +75,19 @@ class Car:
             anchor_a, anchor_b,
             30.0, stiffness, damping
         )
+
         # Jointure en rainure ariere
         self.rear_spring_groove = pymunk.constraints.GrooveJoint(
             self.body, self.rear_wheel_body,
             (-size[0] / 3, 0), (-size[0] / 3, 60), (0, 0)
         )
+
         # Ajout des suspensions à l'espace
         self.space.add(self.front_spring, self.front_spring_groove, self.rear_spring, self.rear_spring_groove)
+
+        # Ajout du moteur à l'espace
         self.space.add(self.front_motor)
+
         # Désactivation des collisions entre les roues et le châssis
         def no_collision(arbiter, space, data):
             return False
@@ -98,14 +103,14 @@ class Car:
         """Applique une impulsion au centre de masse de la voiture"""
         self.body.apply_impulse_at_local_point(impulse, (0, 0))
 
-    def jump(self, force=(0, -1000)):
+    def jump(self, force=(0, -200)):
         """Fait sauter la voiture"""
         self.body.apply_impulse_at_local_point(force)
 
     def accelerate(self, direction=1):
         """Contrôle l'accélération de la voiture
         direction: 1 pour avancer, -1 pour reculer"""
-        self.front_motor.rate = -20 * direction
+        self.front_motor.rate = -2 * direction
 
     def brake(self):
         """Applique les freins en arrêtant le moteur"""

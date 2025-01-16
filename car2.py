@@ -3,7 +3,7 @@ import pymunk
 from pymunk.vec2d import Vec2d
 
 
-class Car:
+class Car2:
     def __init__(self, space, position, size=(125, 35)):
         self.space = space
 
@@ -66,7 +66,7 @@ class Car:
         )
         # Moteur avant
         self.front_motor = pymunk.constraints.SimpleMotor(self.body, self.front_wheel_body, 0)
-        self.front_motor.max_force = 10000.0
+        self.front_motor.max_force = 80000.0
 
         # Suspension arrière
         anchor_a = (-size[0] / 3, size[1] / 2 - 20)

@@ -12,7 +12,7 @@ from car2 import Car2
 pygame.init()
 
 # Configuration de la fenêtre de jeu
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((960, 540))
 pygame.display.set_caption("2D Rocket League")
 
 # Configuration de Pymunk
@@ -29,10 +29,10 @@ def create_walls(space, width, height):
     ]
     for line in static_lines:
         line.elasticity = 1.0
-        line.friction = 0.5
+        line.friction = 1.0
         space.add(line)
 
-create_walls(space, 800, 600)
+create_walls(space, screen.get_width(), screen.get_height())
 
 
 def handle_input(car):
@@ -41,6 +41,8 @@ def handle_input(car):
         car.accelerate(1)  # Avancer vers la droite
     elif keys[pygame.K_LEFT]:
         car.accelerate(-1)  # Avancer vers la gauche
+    elif keys[pygame.K_UP]:
+        car.jump((0, -100))  # Avancer vers la gauche
     else:
         car.brake()  # Freiner
 

@@ -1,5 +1,12 @@
+'''A VOIR https://github.com/Filbert-code/Python-Pymunk-Vehicle-Simulator/blob/main/Simluator/Sportscar.py
+
+
+'''
 import pygame
 import pymunk
+from pymunk.pygame_util import DrawOptions
+from car import Car
+from car2 import Car2
 
 # Initialisation de Pygame
 pygame.init()
@@ -10,8 +17,8 @@ pygame.display.set_caption("2D Rocket League")
 
 # Configuration de Pymunk
 space = pymunk.Space()
-space.gravity = (0, 1)
-
+space.gravity = (0, 2)
+draw_options = pymunk.pygame_util.DrawOptions(screen)
 # Création du terrain de jeu
 def create_walls(space, width, height):
     static_lines = [
@@ -22,50 +29,23 @@ def create_walls(space, width, height):
     ]
     for line in static_lines:
         line.elasticity = 1.0
+        line.friction = 0.5
         space.add(line)
 
 create_walls(space, 800, 600)
 
-def create_car(space, position):
-    body = pymunk.Body(1, pymunk.moment_for_box(1, (50, 30)))
-    body.position = position
-    shape = pymunk.Poly.create_box(body, (50, 30))
-    shape.elasticity = 0.2
-    space.add(body, shape)
-    return body
-
-def create_ball(space, position):
-    body = pymunk.Body(1, pymunk.moment_for_circle(1, 0, 30))
-    body.position = position
-    shape = pymunk.Circle(body, 30)
-    shape.elasticity = 0.6
-    space.add(body, shape)
-    return body
-
-car1 = create_car(space, (300, 300))
-#car2 = create_car(space, (600, 300))
-ball = create_ball(space, (400, 300))
-
 
 def handle_input(car):
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        car.apply_force_at_local_point((-5, 0), (0, 0))
     if keys[pygame.K_RIGHT]:
-        car.apply_force_at_local_point((5, 0), (0, 0))
-    if keys[pygame.K_UP]:
-        car.apply_force_at_local_point((0, -2), (0, 0))
-    if keys[pygame.K_DOWN]:
-        car.apply_force_at_local_point((0, 2), (0, 0))
+        car.accelerate(1)  # Avancer vers la droite
+    elif keys[pygame.K_LEFT]:
+        car.accelerate(-1)  # Avancer vers la gauche
+    else:
+        car.brake()  # Freiner
 
-def draw_objects(screen, space):
-    for shape in space.shapes:
-        if isinstance(shape, pymunk.Poly):
-            points = shape.get_vertices()
-            points = [(int(p.x+shape.body.position.x), int(p.y+shape.body.position.y)) for p in points]
-            pygame.draw.polygon(screen, (255, 0, 0), points)
-        elif isinstance(shape, pymunk.Circle):
-            pygame.draw.circle(screen, (0, 255, 0), (int(shape.body.position.x), int(shape.body.position.y)), int(shape.radius))
+# Création de la voiture
+car = Car(space, (200, 300))
 
 # Boucle principale du jeu
 running = True
@@ -74,12 +54,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    handle_input(car1)
-    #handle_input(car2)
 
     space.step(1/60.0)
     screen.fill((0, 0, 0))
-    draw_objects(screen, space)
+    space.debug_draw(draw_options)
+    handle_input(car)
+    #car.draw(screen)
     pygame.display.flip()
 
 pygame.quit()

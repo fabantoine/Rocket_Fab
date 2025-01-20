@@ -16,7 +16,7 @@ class Car:
         # Création de la forme rectangulaire pour le châssis
         self.shape = pymunk.Poly.create_box(self.body, size)
         self.shape.friction = 0.5
-        self.shape.elasticity = 0.01
+        self.shape.elasticity = 0.1
         self.shape.collision_type = 1
 
         # Ajout du châssis à l'espace

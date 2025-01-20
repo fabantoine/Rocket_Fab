@@ -1,11 +1,8 @@
-'''A VOIR https://github.com/Filbert-code/Python-Pymunk-Vehicle-Simulator/blob/main/Simluator/Sportscar.py
-
-
-'''
 import pygame
 import pymunk
 from pymunk.pygame_util import DrawOptions
 from car import Car
+from ball import Ball
 from car2 import Car2
 
 # Initialisation de Pygame
@@ -49,6 +46,9 @@ def handle_input(car):
 # Création de la voiture
 car = Car(space, (200, 300))
 
+# Création de la balle
+ball = Ball(space, (400, 300))  # Position initiale au milieu de l'écran
+
 # Boucle principale du jeu
 running = True
 while running:
@@ -62,6 +62,8 @@ while running:
     space.debug_draw(draw_options)
     handle_input(car)
     #car.draw(screen)
+    # Dans votre boucle de jeu principale
+    #ball.draw(screen)
     pygame.display.flip()
 
 pygame.quit()
